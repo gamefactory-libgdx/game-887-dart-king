@@ -138,6 +138,7 @@ public class LeaderboardScreen implements Screen {
                 style = bodyStyle;
             }
             Label rowLbl = new Label(text, style);
+            rowLbl.setFontScale(1.4f);
             rowLbl.setSize(440f, 54f);
             rowLbl.setPosition(20f, rowY);
             rowLbl.setAlignment(Align.left | Align.center);

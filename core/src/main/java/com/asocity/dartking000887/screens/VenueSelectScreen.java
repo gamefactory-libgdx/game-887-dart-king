@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,18 +22,30 @@ import com.asocity.dartking000887.SaveData;
 import com.asocity.dartking000887.UiFactory;
 import com.asocity.dartking000887.gameplay.VenueConfig;
 
-/**
- * Screen for choosing which venue (difficulty) to play.
- */
 public class VenueSelectScreen implements Screen {
 
     private final MainGame game;
     private Stage stage;
+    private ShapeRenderer sr;
 
     private static final String BG = "ui/venue_select_screen.png";
 
+    // Card colors per venue
+    private static final Color[] CARD_COLORS = {
+        new Color(0.55f, 0.25f, 0.05f, 0.85f),  // pub  — dark amber
+        new Color(0.70f, 0.35f, 0.06f, 0.85f),  // tour — orange-brown
+        new Color(0.85f, 0.20f, 0.05f, 0.85f),  // champ— deep red
+    };
+    private static final String[] STARS = { "\u2605", "\u2605\u2605", "\u2605\u2605\u2605" };
+    private static final VenueConfig[] VENUES = {
+        VenueConfig.VENUE_LOCAL_PUB,
+        VenueConfig.VENUE_TOURNAMENT,
+        VenueConfig.VENUE_CHAMPIONS
+    };
+
     public VenueSelectScreen(MainGame game) {
         this.game = game;
+        sr = new ShapeRenderer();
         buildStage();
     }
 
@@ -45,40 +58,48 @@ public class VenueSelectScreen implements Screen {
             game.manager.finishLoading();
         }
 
-        TextButton.TextButtonStyle rectStyle  = UiFactory.makeRectStyle(game.manager, game.fontBody);
+        TextButton.TextButtonStyle rectStyle = UiFactory.makeRectStyle(game.manager, game.fontHeading);
+        Label.LabelStyle headStyle  = new Label.LabelStyle(game.fontHeading, Color.WHITE);
+        Label.LabelStyle bodyStyle  = new Label.LabelStyle(game.fontBody,    new Color(1f, 0.9f, 0.7f, 1f));
 
-        // ---- Header ----
-        Label.LabelStyle titleStyle = new Label.LabelStyle(game.fontHeading, Color.WHITE);
-        Label header = new Label("CHOOSE VENUE", titleStyle);
-        header.setWidth(Constants.WORLD_WIDTH);
-        header.setPosition(0, 854f - 60f - 50f);
+        // Header
+        Label header = new Label("CHOOSE VENUE", headStyle);
+        header.setSize(Constants.WORLD_WIDTH, 50f);
+        header.setPosition(0, 780f);
         header.setAlignment(Align.center);
         stage.addActor(header);
 
-        // ---- Venue cards: three equal columns ----
-        // top-Y=250, size=120x160 → libgdxY = 854 - 250 - 160 = 444
-        float cardW = 120f;
-        float cardH = 160f;
-        float cardY = 444f;
-        float margin = 40f;
+        // Three vertical venue rows: full-width tap buttons
+        // Row positions from top: 680, 555, 430 (each 100px tall, 15px gap)
+        float[] rowY = { 630f, 500f, 370f };
+        float cardW  = 440f;
+        float cardH  = 110f;
+        float cardX  = (Constants.WORLD_WIDTH - cardW) / 2f;
 
-        // LOCAL PUB
-        addVenueCard(VenueConfig.VENUE_LOCAL_PUB,
-                margin, cardY, cardW, cardH, rectStyle, "★", Constants.PREF_HISCORE_LOCAL_PUB);
+        for (int i = 0; i < VENUES.length; i++) {
+            final VenueConfig v = VENUES[i];
+            int best = SaveData.getHiScore(v.prefHiScore);
+            String bestStr = best > 0 ? "Best: " + best : "Not played yet";
+            String label   = v.displayName + "\n" + STARS[i] + "   " + bestStr;
 
-        // TOURNAMENT HALL
-        addVenueCard(VenueConfig.VENUE_TOURNAMENT,
-                (Constants.WORLD_WIDTH - cardW) / 2f, cardY, cardW, cardH, rectStyle,
-                "★★", Constants.PREF_HISCORE_TOURNAMENT);
+            TextButton btn = UiFactory.makeButton(label, rectStyle, cardW, cardH);
+            btn.setPosition(cardX, rowY[i]);
+            btn.getLabel().setWrap(false);
+            btn.getLabel().setAlignment(Align.center);
+            btn.getLabel().setFontScale(i == 2 ? 0.75f : 0.85f); // champ name is longer
+            final int idx = i;
+            btn.addListener(new ChangeListener() {
+                @Override public void changed(ChangeEvent e, Actor a) {
+                    game.playSound(Constants.SFX_BUTTON_CLICK);
+                    game.setScreen(new GameplayScreen(game, v));
+                }
+            });
+            stage.addActor(btn);
+        }
 
-        // CHAMPIONS ARENA
-        addVenueCard(VenueConfig.VENUE_CHAMPIONS,
-                Constants.WORLD_WIDTH - margin - cardW, cardY, cardW, cardH, rectStyle,
-                "★★★", Constants.PREF_HISCORE_CHAMPIONS);
-
-        // ---- BACK ----
-        // top-Y=790, h=44 → libgdxY = 20
-        TextButton backBtn = UiFactory.makeButton("BACK", rectStyle,
+        // BACK button
+        TextButton backBtn = UiFactory.makeButton("BACK",
+                UiFactory.makeRectStyle(game.manager, game.fontBody),
                 Constants.BTN_SMALL_W, Constants.BTN_SMALL_H);
         backBtn.setPosition(20f, 20f);
         backBtn.addListener(new ChangeListener() {
@@ -89,7 +110,6 @@ public class VenueSelectScreen implements Screen {
         });
         stage.addActor(backBtn);
 
-        // Back key
         stage.addListener(new InputListener() {
             @Override public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.BACK) {
@@ -99,26 +119,6 @@ public class VenueSelectScreen implements Screen {
                 return false;
             }
         });
-    }
-
-    private void addVenueCard(final VenueConfig venue, float x, float y,
-                               float w, float h,
-                               TextButton.TextButtonStyle style,
-                               String stars, String hiScorePref) {
-        // Card button — tapping launches gameplay
-        TextButton card = UiFactory.makeButton(
-                venue.displayName + "\n" + stars + "\nBest: " + SaveData.getHiScore(hiScorePref),
-                style, w, h);
-        card.setPosition(x, y);
-        card.getLabel().setWrap(true);
-        card.getLabel().setAlignment(Align.center);
-        card.addListener(new ChangeListener() {
-            @Override public void changed(ChangeEvent e, Actor a) {
-                game.playSound(Constants.SFX_BUTTON_CLICK);
-                game.setScreen(new GameplayScreen(game, venue));
-            }
-        });
-        stage.addActor(card);
     }
 
     @Override public void show() {
@@ -144,5 +144,5 @@ public class VenueSelectScreen implements Screen {
     @Override public void pause()  {}
     @Override public void resume() {}
     @Override public void hide()   {}
-    @Override public void dispose() { stage.dispose(); }
+    @Override public void dispose() { stage.dispose(); if (sr != null) sr.dispose(); }
 }

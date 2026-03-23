@@ -128,7 +128,7 @@ public class HowToPlayScreen implements Screen {
                                Label.LabelStyle titleStyle, Label.LabelStyle smallStyle) {
         // Step number
         Label numLbl = new Label("Step " + (index + 1), titleStyle);
-        numLbl.setFontScale(0.55f);
+        numLbl.setFontScale(0.85f);
         numLbl.setSize(w, 24f);
         numLbl.setPosition(x, y + h - 28f);
         numLbl.setAlignment(Align.center);
@@ -136,7 +136,7 @@ public class HowToPlayScreen implements Screen {
 
         // Step title
         Label stepTitle = new Label(STEP_TITLES[index], smallStyle);
-        stepTitle.setFontScale(0.9f);
+        stepTitle.setFontScale(1.1f);
         stepTitle.setSize(w, 22f);
         stepTitle.setPosition(x, y + h - 54f);
         stepTitle.setAlignment(Align.center);
@@ -144,7 +144,7 @@ public class HowToPlayScreen implements Screen {
 
         // Description
         Label descLbl = new Label(STEP_DESCS[index], smallStyle);
-        descLbl.setFontScale(0.75f);
+        descLbl.setFontScale(1.0f);
         descLbl.setSize(w - 8f, h - 60f);
         descLbl.setPosition(x + 4f, y + 4f);
         descLbl.setAlignment(Align.topLeft);

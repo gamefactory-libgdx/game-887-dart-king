@@ -18,6 +18,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.asocity.dartking000887.Constants;
 import com.asocity.dartking000887.MainGame;
+import com.asocity.dartking000887.screens.LeaderboardScreen;
+import com.asocity.dartking000887.SaveData;
 import com.asocity.dartking000887.UiFactory;
 import com.asocity.dartking000887.gameplay.GameplayStage;
 import com.asocity.dartking000887.gameplay.VenueConfig;
@@ -247,7 +249,8 @@ public class GameplayScreen implements Screen, GameplayStage.Listener {
     private void handleGameOver() {
         gameOverHandled = true;
         int trophiesEarned = Math.min(gameplay.score / 100, Constants.MAX_TROPHIES_PER_SESSION);
-        // GameOverScreen handles persistence (hi-score, trophies, leaderboard)
+        SaveData.saveHiScore(venue.prefHiScore, gameplay.score);
+        LeaderboardScreen.addScore(gameplay.score);
         game.setScreen(new GameOverScreen(game, gameplay.score, trophiesEarned));
     }
 
