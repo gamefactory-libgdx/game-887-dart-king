@@ -1,0 +1,57 @@
+{
+  "archetype": "archery",
+  "selection": {
+    "sprites/object": {
+      "pack": "gems-games-gui",
+      "source": "craftpix",
+      "path": "objects/generic/gems-games-gui",
+      "type": "object",
+      "theme": [
+        "generic"
+      ],
+      "png_count": 9
+    },
+    "sprites/ui": {
+      "pack": "ui-pack-pixel-adventure",
+      "source": "kenney",
+      "path": "ui/generic/ui-pack-pixel-adventure",
+      "type": "ui",
+      "theme": [
+        "generic"
+      ],
+      "png_count": 161
+    },
+    "backgrounds/menu": {
+      "pack": "free-sky-with-clouds-pixel-art-backgrounds-pack-3",
+      "source": "craftpix",
+      "path": "tilesets/side/generic/free-sky-with-clouds-pixel-art-backgrounds-pack-3",
+      "type": "background",
+      "theme": [
+        "nature"
+      ],
+      "png_count": 7
+    },
+    "backgrounds/game": {
+      "pack": "cave-horizontal-rpg-battle-backgrounds",
+      "source": "craftpix",
+      "path": "backgrounds/fantasy/cave-horizontal-rpg-battle-backgrounds",
+      "type": "background",
+      "theme": [
+        "fantasy",
+        "cave"
+      ],
+      "png_count": 16
+    }
+  },
+  "buttons": {
+    "color": "Grey",
+    "files": [
+      "button_rectangle_depth_gradient.png",
+      "button_rectangle_depth_flat.png",
+      "button_round_depth_gradient.png",
+      "button_round_depth_flat.png",
+      "star.png",
+      "star_outline.png"
+    ]
+  }
+}

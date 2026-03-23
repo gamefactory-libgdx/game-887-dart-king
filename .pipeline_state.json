@@ -1,0 +1,36 @@
+{
+  "title": "Dart King",
+  "orientation": "portrait",
+  "collectible": "trophies",
+  "shopType": "dart_skins",
+  "shopHint": "6 dart sets (Steel Tips, Brass, Neon, Dragon, Ice, Gold). Earn trophies at each pub venue.",
+  "genre": "aim-arcade",
+  "mechanic": "tap",
+  "description": "Precision dart throwing at a rotating dart board. Tap to release dart from bottom. Bulls-eye scores maximum. Darts already stuck rotate with board \u2014 avoid them or it is game over. Three pub venues: Local Pub, Tournament Hall, Champions Arena \u2014 each with faster board rotation.",
+  "screens": [
+    "MainMenuScreen",
+    "VenueSelectScreen",
+    "LocalPubScreen",
+    "TournamentScreen",
+    "ChampionsScreen",
+    "GameOverScreen",
+    "LeaderboardScreen",
+    "ShopScreen",
+    "SettingsScreen",
+    "HowToPlayScreen"
+  ],
+  "slug": "dart-king",
+  "archetype": "archery",
+  "buttonStyle": "rounded",
+  "font1": "GasaltRegular.ttf",
+  "font2": "Born2bSporty.otf",
+  "colors": {
+    "primary": "#8D6E63",
+    "accent": "#FFCA28",
+    "bg": "#3E2723",
+    "text": "#FFFFFF"
+  },
+  "gameId": "game-887-dart-king",
+  "gamePath": "/home/kaliuzhnyi/asocity/projects/game-887-dart-king",
+  "packageName": "com.asocity.dartking000887"
+}

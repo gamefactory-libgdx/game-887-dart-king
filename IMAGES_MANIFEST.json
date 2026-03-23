@@ -1,0 +1,17 @@
+{
+  "generated": [
+    "icon_512.png",
+    "ui/main_menu_screen.png",
+    "ui/venue_select_screen.png",
+    "ui/local_pub_screen.png",
+    "ui/tournament_screen.png",
+    "ui/champions_screen.png",
+    "ui/game_over_screen.png",
+    "ui/leaderboard_screen.png",
+    "ui/shop_screen.png",
+    "ui/settings_screen.png",
+    "ui/how_to_play_screen.png"
+  ],
+  "failed": [],
+  "total_tokens": 25073
+}
