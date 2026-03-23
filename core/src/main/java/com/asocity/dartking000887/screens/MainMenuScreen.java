@@ -56,9 +56,10 @@ public class MainMenuScreen implements Screen {
 
         // Title: topY=80, h=70  → libgdxY=704, w=340
         Label titleLbl = new Label("DART KING", titleStyle);
-        titleLbl.setSize(340f, 70f);
-        titleLbl.setPosition((Constants.WORLD_WIDTH - 340f) / 2f, 704f);
+        titleLbl.setSize(460f, 90f);
+        titleLbl.setPosition((Constants.WORLD_WIDTH - 460f) / 2f, 728f);
         titleLbl.setAlignment(Align.center);
+        titleLbl.setFontScale(1.3f);
         stage.addActor(titleLbl);
 
         // PLAY: topY=320, h=60 → libgdxY=474, w=260

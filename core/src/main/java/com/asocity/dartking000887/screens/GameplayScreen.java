@@ -115,9 +115,10 @@ public class GameplayScreen implements Screen, GameplayStage.Listener {
         stage.addActor(dartsLbl);
 
         // Venue name — center top
-        venueLbl = new Label(venue.displayName, smallStyle);
-        venueLbl.setSize(Constants.WORLD_WIDTH, 30f);
-        venueLbl.setPosition(0, 810f);
+        venueLbl = new Label(venue.displayName, new com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle(game.fontHeading, com.badlogic.gdx.graphics.Color.WHITE));
+        venueLbl.setFontScale(0.85f);
+        venueLbl.setSize(Constants.WORLD_WIDTH, 50f);
+        venueLbl.setPosition(0, 748f);
         venueLbl.setAlignment(Align.center);
         stage.addActor(venueLbl);
 
@@ -125,7 +126,7 @@ public class GameplayScreen implements Screen, GameplayStage.Listener {
         TextButton.TextButtonStyle roundStyle = UiFactory.makeRoundStyle(game.manager, game.fontBody);
         TextButton pauseBtn = UiFactory.makeButton("II", roundStyle,
                 Constants.BTN_ROUND_W, Constants.BTN_ROUND_H);
-        pauseBtn.setPosition((Constants.WORLD_WIDTH - Constants.BTN_ROUND_W) / 2f, 760f);
+        pauseBtn.setPosition(Constants.WORLD_WIDTH - Constants.BTN_ROUND_W - 20f, 716f);
         pauseBtn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent e, Actor a) {
                 if (gameplay.gameOver) return;
