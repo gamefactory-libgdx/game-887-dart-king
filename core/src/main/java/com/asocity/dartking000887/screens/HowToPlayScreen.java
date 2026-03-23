@@ -60,8 +60,8 @@ public class HowToPlayScreen implements Screen {
         float panelH = 215f;
         float leftX  = 22f;
         float rightX = Constants.WORLD_WIDTH - 22f - panelW;
-        float row1Y  = 495f;  // bottom of top panels
-        float row2Y  = 258f;  // bottom of bottom panels
+        float row1Y  = 440f;  // bottom of top panels
+        float row2Y  = 200f;  // bottom of bottom panels
 
         addPanel(0, leftX,  row1Y, panelW, panelH, headStyle, bodyStyle);
         addPanel(1, rightX, row1Y, panelW, panelH, headStyle, bodyStyle);

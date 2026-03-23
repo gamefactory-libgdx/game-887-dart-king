@@ -113,8 +113,8 @@ public class VenueSelectScreen implements Screen {
             // Best score
             int best = SaveData.getHiScore(v.prefHiScore);
             String bestStr = best > 0 ? "Best: " + best : "No record yet";
-            Label bestLbl = new Label(bestStr, smallStyle);
-            bestLbl.setSize(textW, 22f);
+            Label bestLbl = new Label(bestStr, bodyStyle);
+            bestLbl.setSize(textW, 28f);
             bestLbl.setPosition(textX, ry + 8f);
             bestLbl.setAlignment(Align.left);
             stage.addActor(bestLbl);
