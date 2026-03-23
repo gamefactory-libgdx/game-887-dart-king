@@ -123,9 +123,9 @@ public class GameplayScreen implements Screen, GameplayStage.Listener {
 
         // FIGMA: PAUSE | top-Y=20, x=centered, size=60x44 → libgdxY = 854-20-44 = 790
         TextButton.TextButtonStyle roundStyle = UiFactory.makeRoundStyle(game.manager, game.fontBody);
-        TextButton pauseBtn = UiFactory.makeButton("||", roundStyle,
+        TextButton pauseBtn = UiFactory.makeButton("II", roundStyle,
                 Constants.BTN_ROUND_W, Constants.BTN_ROUND_H);
-        pauseBtn.setPosition((Constants.WORLD_WIDTH - Constants.BTN_ROUND_W) / 2f, 790f);
+        pauseBtn.setPosition((Constants.WORLD_WIDTH - Constants.BTN_ROUND_W) / 2f, 760f);
         pauseBtn.addListener(new ChangeListener() {
             @Override public void changed(ChangeEvent e, Actor a) {
                 if (gameplay.gameOver) return;

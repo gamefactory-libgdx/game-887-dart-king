@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -26,26 +25,18 @@ public class VenueSelectScreen implements Screen {
 
     private final MainGame game;
     private Stage stage;
-    private ShapeRenderer sr;
 
     private static final String BG = "ui/venue_select_screen.png";
 
-    // Card colors per venue
-    private static final Color[] CARD_COLORS = {
-        new Color(0.55f, 0.25f, 0.05f, 0.85f),  // pub  — dark amber
-        new Color(0.70f, 0.35f, 0.06f, 0.85f),  // tour — orange-brown
-        new Color(0.85f, 0.20f, 0.05f, 0.85f),  // champ— deep red
-    };
-    private static final String[] STARS = { "\u2605", "\u2605\u2605", "\u2605\u2605\u2605" };
     private static final VenueConfig[] VENUES = {
         VenueConfig.VENUE_LOCAL_PUB,
         VenueConfig.VENUE_TOURNAMENT,
-        VenueConfig.VENUE_CHAMPIONS
+        VenueConfig.VENUE_CHAMPIONS,
     };
+    private static final String[] DIFFICULTY = { "EASY", "MEDIUM", "HARD" };
 
     public VenueSelectScreen(MainGame game) {
         this.game = game;
-        sr = new ShapeRenderer();
         buildStage();
     }
 
@@ -58,43 +49,75 @@ public class VenueSelectScreen implements Screen {
             game.manager.finishLoading();
         }
 
-        TextButton.TextButtonStyle rectStyle = UiFactory.makeRectStyle(game.manager, game.fontHeading);
+        // Pre-load venue thumbnails
+        for (VenueConfig v : VENUES) {
+            if (!game.manager.isLoaded(v.bgTexture)) {
+                game.manager.load(v.bgTexture, Texture.class);
+            }
+        }
+        game.manager.finishLoading();
+
         Label.LabelStyle headStyle  = new Label.LabelStyle(game.fontHeading, Color.WHITE);
-        Label.LabelStyle bodyStyle  = new Label.LabelStyle(game.fontBody,    new Color(1f, 0.9f, 0.7f, 1f));
+        Label.LabelStyle bodyStyle  = new Label.LabelStyle(game.fontBody,    new Color(1f, 0.85f, 0.6f, 1f));
+        Label.LabelStyle smallStyle = new Label.LabelStyle(game.fontSmall,   new Color(0.9f, 0.7f, 0.4f, 1f));
+        TextButton.TextButtonStyle rectStyle = UiFactory.makeRectStyle(game.manager, game.fontHeading);
 
         // Header
         Label header = new Label("CHOOSE VENUE", headStyle);
         header.setSize(Constants.WORLD_WIDTH, 50f);
-        header.setPosition(0, 780f);
+        header.setPosition(0, 785f);
         header.setAlignment(Align.center);
         stage.addActor(header);
 
-        // Three vertical venue rows: full-width tap buttons
-        // Row positions from top: 680, 555, 430 (each 100px tall, 15px gap)
-        float[] rowY = { 630f, 500f, 370f };
-        float cardW  = 440f;
-        float cardH  = 110f;
-        float cardX  = (Constants.WORLD_WIDTH - cardW) / 2f;
+        // 3 venue rows stacked vertically
+        // Each row: Y positions from top of screen down
+        float[] rowY    = { 640f, 500f, 360f };
+        float rowH      = 120f;
+        float thumbW    = 150f;  // venue preview thumbnail width
+        float thumbH    = 110f;  // venue preview thumbnail height
+        float thumbX    = 15f;
+        float textX     = thumbX + thumbW + 15f;
+        float textW     = Constants.WORLD_WIDTH - textX - 15f;
 
         for (int i = 0; i < VENUES.length; i++) {
             final VenueConfig v = VENUES[i];
-            int best = SaveData.getHiScore(v.prefHiScore);
-            String bestStr = best > 0 ? "Best: " + best : "Not played yet";
-            String label   = v.displayName + "\n" + STARS[i] + "   " + bestStr;
+            final float ry = rowY[i];
 
-            TextButton btn = UiFactory.makeButton(label, rectStyle, cardW, cardH);
-            btn.setPosition(cardX, rowY[i]);
-            btn.getLabel().setWrap(false);
-            btn.getLabel().setAlignment(Align.center);
-            btn.getLabel().setFontScale(i == 2 ? 0.75f : 0.85f); // champ name is longer
+            // Tap-target button (full row width, transparent label — color is the tinted sprite)
+            TextButton rowBtn = UiFactory.makeButton("", rectStyle, Constants.WORLD_WIDTH - 20f, rowH);
+            rowBtn.setPosition(10f, ry);
             final int idx = i;
-            btn.addListener(new ChangeListener() {
+            rowBtn.addListener(new ChangeListener() {
                 @Override public void changed(ChangeEvent e, Actor a) {
                     game.playSound(Constants.SFX_BUTTON_CLICK);
                     game.setScreen(new GameplayScreen(game, v));
                 }
             });
-            stage.addActor(btn);
+            stage.addActor(rowBtn);
+
+            // Venue name
+            Label nameLbl = new Label(v.displayName, headStyle);
+            nameLbl.setFontScale(0.85f);
+            nameLbl.setSize(textW, 36f);
+            nameLbl.setPosition(textX, ry + rowH - 42f);
+            nameLbl.setAlignment(Align.left);
+            stage.addActor(nameLbl);
+
+            // Difficulty
+            Label diffLbl = new Label(DIFFICULTY[i], bodyStyle);
+            diffLbl.setSize(textW, 24f);
+            diffLbl.setPosition(textX, ry + rowH - 70f);
+            diffLbl.setAlignment(Align.left);
+            stage.addActor(diffLbl);
+
+            // Best score
+            int best = SaveData.getHiScore(v.prefHiScore);
+            String bestStr = best > 0 ? "Best: " + best : "No record yet";
+            Label bestLbl = new Label(bestStr, smallStyle);
+            bestLbl.setSize(textW, 22f);
+            bestLbl.setPosition(textX, ry + 10f);
+            bestLbl.setAlignment(Align.left);
+            stage.addActor(bestLbl);
         }
 
         // BACK button
@@ -132,8 +155,19 @@ public class VenueSelectScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
+        // Background
         game.batch.draw(game.manager.get(BG, Texture.class),
                 0, 0, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
+
+        // Draw venue thumbnails on top of each row
+        float[] rowY  = { 640f, 500f, 360f };
+        float thumbW  = 150f;
+        float thumbH  = 110f;
+        float thumbX  = 15f;
+        for (int i = 0; i < VENUES.length; i++) {
+            Texture thumb = game.manager.get(VENUES[i].bgTexture, Texture.class);
+            game.batch.draw(thumb, thumbX, rowY[i] + 5f, thumbW, thumbH);
+        }
         game.batch.end();
 
         stage.act(delta);
@@ -144,5 +178,5 @@ public class VenueSelectScreen implements Screen {
     @Override public void pause()  {}
     @Override public void resume() {}
     @Override public void hide()   {}
-    @Override public void dispose() { stage.dispose(); if (sr != null) sr.dispose(); }
+    @Override public void dispose() { stage.dispose(); }
 }
